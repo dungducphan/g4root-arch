@@ -23,5 +23,10 @@ RUN git clone --branch geant4-11.0-release https://github.com/Geant4/geant4.git 
 WORKDIR /opt/Geant4/build/
 RUN cmake /opt/Geant4/src/ -GNinja -DGEANT4_INSTALL_DATA=ON 
 RUN ninja
+RUN ninja install
+
+# WORKDIR /opt/Geant4/build/bin/
+RUN ["/bin/sh", "-c", "source geant4.sh"]
+ENV CMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}:/usr/local/lib/Geant4-11.0.0"
 
 ENTRYPOINT entry.sh
