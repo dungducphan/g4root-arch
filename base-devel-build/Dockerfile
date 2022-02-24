@@ -1,21 +1,16 @@
 FROM archlinux:base-devel
 
-RUN pacman -Sy git cmake ninja --noconfirm
-RUN pacman -Sy root --noconfirm
-RUN useradd --shell=/bin/false build && usermod -L build
+RUN pacman -Sy git cmake ninja root go --noconfirm
+RUN useradd --shell=/bin/false build && usermod -L build -aG wheel
 RUN git clone https://aur.archlinux.org/yay-git.git /opt/yay-git
-RUN mkdir /home/build
-RUN chown -R build:build /opt/yay-git
-RUN chown -R build:build /home/build
+RUN mkdir /home/build && chown -R build:build /opt/yay-git /home/build
 WORKDIR /opt/yay-git
-RUN pacman -Sy go --noconfirm
-RUN usermod -aG wheel build
 USER build
 RUN makepkg -s
 USER root
 
 COPY entry.sh /usr/local/bin/entry.sh
-RUN chmod +x /usr/local/bin/entry.sh
+# RUN chmod +x /usr/local/bin/entry.sh
 ENV PATH="${PATH}:/opt/yay-git/pkg/yay-git/usr/bin/"
 
 RUN mkdir -p /opt/Geant4/build
